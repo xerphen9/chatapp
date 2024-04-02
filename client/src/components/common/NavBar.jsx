@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 import { GoGear } from 'react-icons/go';
 import { CiLock, CiBellOn } from "react-icons/ci";
 import { IoMoonOutline, IoLanguageOutline } from "react-icons/io5";
+import { IconContext } from 'react-icons';
 
 const NavBar = () => {
     const route = [
-        { path: '/settings', label: 'General Settings', icon: <GoGear className='p-5 w-[20px] xl:w-[20px] 2xl:w-[20px]'/>},
-        { path: '/notifications', label: 'Notifications', icon: <CiBellOn className='p-5 w-[20px] xl:w-[20px] 2xl:w-[20px]'/>},
-        { path: '/privacy', label: 'Privacy and Security', icon: <CiLock className='p-5 w-[20px] xl:w-[20px] 2xl:w-[20px]'/>},
-        { path: null, label: 'Language', icon: <IoLanguageOutline className='p-5 w-[20px] xl:w-[20px] 2xl:w-[20px]'/>},
-        { path: null, label: 'Dark Mode', icon: <IoMoonOutline className='p-5 w-[20px] xl:w-[20px] 2xl:w-[20px]'/>}
+        { path: '/settings', label: 'General Settings', icon: <GoGear/>},
+        { path: '/notifications', label: 'Notifications', icon: <CiLock/>},
+        { path: '/privacy', label: 'Privacy and Security', icon: <CiBellOn/>},
+        { path: null, label: 'Language', icon: <IoMoonOutline/>},
+        { path: null, label: 'Dark Mode', icon: <IoLanguageOutline/>}
     ]
 
     return (
@@ -25,7 +26,7 @@ const NavBar = () => {
                                         {
                                             value.label === 'Dark Mode' ? 
                                             <>
-                                                {value.icon}
+                                                <span className='xl:p-5 xl:text-xl 2xl:p-5 2xl:text-xl'>{value.icon}</span>
                                                 <div className="form-control w-[70%]">
                                                     <label className="label cursor-pointer text-white">
                                                         <span className='leading-5'>{value.label}</span>
@@ -34,7 +35,7 @@ const NavBar = () => {
                                                 </div>
                                             </> : 
                                             <>
-                                                {value.icon}
+                                                <span className='xl:p-5 xl:text-xl 2xl:p-5 2xl:text-xl'>{value.icon}</span>
                                                 <label>{value.label}</label>
                                             </>
                                         }

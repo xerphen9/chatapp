@@ -1,13 +1,13 @@
 const cookieHelper = require('../helper/cookieHelper.js')
 const bcrypt = require('bcrypt')
 const UserModel = require('../models/usersModel.js')
+const appConfig = require('../config/appConfig.js')
 
-const createUser = async (req, res, next) => {
+const createUser = async (req, res) => {
     const {email, password} = req.body
     const saltRounds = 10
     const salt = bcrypt.genSaltSync(saltRounds)
     let hashPassword = bcrypt.hashSync(password.toString(), salt)
-    console.log(hashPassword)
 
     try {
         let userExist = await UserModel.findOne({
@@ -30,27 +30,31 @@ const createUser = async (req, res, next) => {
     }
 }
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
     const _cookieHelper = cookieHelper()
     const {email, password} = req.body
+
+    const options = {
+        httpOnly: process.env.NODE_ENV === 'production' ? true : false, //The cookie cannot be accessed by client-side scripts
+        secure: process.env.NODE_ENV === 'production' ? true : false, //only works on HTTPS
+        maxAge: 259200000,
+    }
 
     try {
         let users = await UserModel.findOne({
             email
         })
 
-        if(users && (bcrypt.compareSync(password, users.password))) {
-            console.log('masuk')
-            _cookieHelper.jwtSignIn(users._id, async (token) => {
-                return res.status(200).cookie('tokenChat', token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: true,
-                })
-            })
-        } else {
-            return res.status(400).json({msg: 'Invalid Email/Password'})
-        }
+        let passwordSync = bcrypt.compareSync(password, users.password)
+
+        if(!users) return res.status(400).json({msg: 'User not found'})
+
+        if(!passwordSync) return res.status(400).json({msg: 'Invalid Email/Password'})
+
+        return _cookieHelper.jwtSignIn(users._id, (token) => {
+            res.status(200).cookie('token', token, options).json({msg: 'Login successful', users})
+            next()
+        })
     } catch (error) {
         return res.status(401).json({msg: 'Something went wrong'})
     }
@@ -59,10 +63,15 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
     try {
-        res.cookie('tokenChat', "", {maxAge: 0})
-        res.status(200).json({msg: 'Logged out successfully'})
+        res.status(200).clearCookie('token').json({
+            msg: 'Logged out successfully', 
+            success: true
+        })
     } catch (error) {
-        return res.status(500).json({msg: 'Interval server error'})
+        res.status(500).json({
+            msg: 'Something went wrong', 
+            success: false
+        })
     }
 }
 

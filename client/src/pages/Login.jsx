@@ -1,17 +1,41 @@
-import React, { useState } from 'react'
+//config and library
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Button from '../components/Button';
+import { userVerificationRoute } from '../routes/ApiRoutes';
 import { Link, useNavigate } from 'react-router-dom';
-import InputField from '../components/InputField';
-import { SiGmail } from "react-icons/si";
 import { loginUserRoute } from '../routes/ApiRoutes';
 import toast, { Toaster } from 'react-hot-toast';
+
+//components or pages
+import Button from '../components/common/Button';
+import InputField from '../components/common/InputField';
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const navigate = useNavigate()
   const [input, setInput] = useState([
     { email: '', password: ''}
   ])
+
+  const verification = async () => {
+    try {
+      const response = await axios.get(userVerificationRoute, {
+        withCredentials: true
+      })
+      
+      if(response.data.status) {
+        navigate('/')
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log('ERROR', error)
+    }
+  }
+
+  useEffect(() => {
+    verification()
+  }, [])
 
   // function to handle input data
   const handleSubmit = async (e) => {
@@ -20,14 +44,18 @@ const Login = () => {
       const response = await axios.post(loginUserRoute, {
         email: input.email,
         password: input.password,
+      }, { 
+        withCredentials: true,
       })
-      console.log(response)
-      // if(response) {
-      //   toast.success('Login successful')
-      //   navigate('/')
-      // }
+      
+      if(response) {
+        toast.success(response.data.msg)
+        setTimeout(() => {
+          navigate('/')
+        }, 2000)
+      }
     } catch (error) {
-      toast.error(error.response.data.msg)
+      toast.error(error.response)
     }
   }
 
@@ -69,22 +97,31 @@ const Login = () => {
     </form>
 
   return (
-    <div className='w-full h-screen bg-gray-light overflow-hidden'>
-      <div className='h-[5%]'>
-        <Button className='bg-transparent shadow-none float-end'>
-          <Link to='/signup'>Sign Up</Link>
-        </Button>
-      </div>
-      <div className='h-[20%] relative'>
-        <h1 className='text-dark font-bold text-3xl text-center absolute bottom-0 right-0 left-0'>Sign In</h1>
-      </div>
-      <div className='sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-2/6 h-[75%] m-auto'>
-        {Form}
-        <h1 className='text-center mt-3'>or sign in using gmail</h1>
-        <div className='w-full p-5 gap-5 mt-3'>
-          <Button className='bg-transparent w-full text-xl border border-[#c71610]'><span><SiGmail className='text-[#c71610]'/></span>Gmail</Button>
+    <div>
+      <div className='w-full h-screen bg-gray-light overflow-hidden'>
+        <div className='h-[5%]'>
+          <Button className='bg-transparent shadow-none float-end'>
+            <Link to='/signup'>Sign Up</Link>
+          </Button>
+        </div>
+        <div className='h-[20%] relative'>
+          <h1 className='text-dark font-bold text-3xl text-center absolute bottom-0 right-0 left-0'>Sign In</h1>
+        </div>
+        <div className='sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-2/6 h-[75%] m-auto'>
+          {Form}
+          <h1 className='text-center mt-3'>or sign in using gmail</h1>
+          <div className='w-full p-5 gap-5 mt-3'>
+            <Button className='w-full text-xl 
+              hover:bg-neutral-600 hover:text-white  shadow-gray'>
+              <span>
+                <FcGoogle />
+              </span>
+              Google
+            </Button>
+          </div>
         </div>
       </div>
+      <Toaster position='top-center'/>
     </div>
   )
 }

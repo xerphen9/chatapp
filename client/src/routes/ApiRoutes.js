@@ -1,6 +1,7 @@
 export const BASE_URL = 'http://localhost:5000'
 
 //user routes
+export const userVerificationRoute = `${BASE_URL}/api/users`
 export const registerUserRoute = `${BASE_URL}/api/users/signup`
 export const loginUserRoute = `${BASE_URL}/api/users/login`
 export const logoutUserRoute = `${BASE_URL}/api/users/logout`

@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import Button from '../components/Button';
+import Button from '../components/common/Button';
 import { Link, useNavigate } from 'react-router-dom';
-import { SiGmail } from "react-icons/si";
+import { userVerificationRoute } from '../routes/ApiRoutes';
+import { FcGoogle } from "react-icons/fc";
 import { registerUserRoute } from '../routes/ApiRoutes';
-import InputField from '../components/InputField';
+import InputField from '../components/common/InputField';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Signup = () => {
@@ -12,6 +13,26 @@ const Signup = () => {
   const [input, setInput] = useState([
     { email: '', password: '', confirmpassword: ''}
   ])
+  
+  const verification = async () => {
+    try {
+      const response = await axios.get(userVerificationRoute, {
+        withCredentials: true
+      })
+      
+      if(response.data.status) {
+        navigate('/')
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log('ERROR', error)
+    }
+  }
+
+  useEffect(() => {
+    verification()
+  }, [])
 
   // function to handle input data
   const handleSignUp = async (e) => {
@@ -97,7 +118,13 @@ const Signup = () => {
         { Form }
         <h1 className='text-center mt-3'>or sign up using gmail</h1>
         <div className='w-full relative p-5 mt-3'>
-          <Button className='bg-transparent w-full border border-[#c71610] text-xl'><span><SiGmail className='text-[#c71610]'/></span>Gmail</Button>
+          <Button className='w-full text-xl 
+            hover:bg-neutral-600 hover:text-white  shadow-gray'>
+            <span>
+              <FcGoogle />
+            </span>
+            Google
+          </Button>
         </div>
       </div>
       <Toaster position='top-center'/>

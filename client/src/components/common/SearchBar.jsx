@@ -1,5 +1,5 @@
 import React from 'react'
-import InputField from './InputField'
+import InputField from '../common/InputField'
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const SearchBar = () => {

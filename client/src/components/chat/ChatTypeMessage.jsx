@@ -2,8 +2,8 @@ import React, {useContext, useState} from 'react'
 import { ChatContext } from '../../context/ChatContext';
 import {io} from 'socket.io-client'
 import { BASE_URL } from '../../routes/ApiRoutes';
-import InputField from '../InputField';
-import Button from '../Button';
+import InputField from '../common/InputField';
+import Button from '../common/Button';
 import { GoPaperclip } from "react-icons/go";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 import { FaMicrophone } from "react-icons/fa";
@@ -35,14 +35,13 @@ const ChatTypeMessage = () => {
       <div className='w-[85%] m-auto text-left'>
         <form>
           <span className='relative'>
-            <span>
-              <IoPaperPlaneOutline className='absolute text-gray right-0 pr-3 hover:cursor-pointer
-                h-12 text-2xl
-                sm:h-12 sm:text-3xl
-                md:h-12 md:text-3xl 
-                xl:h-12 xl:text-3xl
-                2xl:h-1 2xl:text-4xl'
-                onClick={e => handleClick(e)}/>
+            <span className='absolute text-gray right-0 pr-3 hover:cursor-pointer top-0 bottom-0
+                text-xl
+                sm:text-xl
+                md:text-xl 
+                xl:text-xl
+                2xl:text-xl' onClick={e => handleClick(e)}>
+              <IoPaperPlaneOutline />
             </span>
             <InputField type='text' 
                         placeholder='Type a message' 

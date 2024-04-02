@@ -1,7 +1,6 @@
 import React from 'react'
 import NavBar from './NavBar';
-import Avatar from './Avatar';
-import Bio from './Bio';
+import Bio from '../Bio';
 
 const SideBar = () => {
   return (
